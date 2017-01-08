@@ -1,0 +1,40 @@
+{
+  "name": "fenrir",
+  "version": "0.0.1",
+  "description": "A fast in memory backed persistent database based on LokiJS",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint src/**/*.js",
+    "test": "mocha",
+    "coverage": "istanbul cover _mocha",
+    "jsdoc": "./node_modules/.bin/jsdoc -c jsdoc-conf.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/f3lang/fenrir.git"
+  },
+  "keywords": [
+    "database",
+    "inmemory",
+    "lokijs",
+    "persistent",
+    "mongodb",
+    "nosql"
+  ],
+  "author": {
+    "name": "Wolfgang Felbermeier",
+    "email": "wf@felbermeier.com"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/f3lang/fenrir/issues"
+  },
+  "homepage": "http://fenrirdb.io",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "eslint": "^3.12.2",
+    "istanbul": "^0.4.5",
+    "jsdoc": "^3.4.3",
+    "mocha": "^3.2.0"
+  }
+}
