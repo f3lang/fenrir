@@ -1,6 +1,6 @@
 const FenrirPersistenceAdapter = require('../FenrirPersistenceAdapter');
 
-class FenrirPersistentFileSystemAdapter extends FenrirPersistenceAdapter {
+class File extends FenrirPersistenceAdapter {
 
 	constructor(objectIdentifierProperty, indexEntryIdentifierProperty, options) {
 		super(objectIdentifierProperty, indexEntryIdentifierProperty, options);
@@ -8,4 +8,4 @@ class FenrirPersistentFileSystemAdapter extends FenrirPersistenceAdapter {
 
 }
 
-module.exports = FenrirPersistentFileSystemAdapter;
+module.exports = File;

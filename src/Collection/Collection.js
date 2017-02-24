@@ -14,6 +14,7 @@ class Collection extends FenrirEventEmitter {
 	 * @extends FenrirEventEmitter
 	 * @param {string} name - collection name
 	 * @param {(array|object)=} options - (optional) array of property names to be indicized OR a configuration object
+	 * @param {string} options.persistenceAdapter The persistence adapter to use
 	 * @param {array} options.unique - array of property names to define unique constraints for
 	 * @param {array} options.exact - array of property names to define exact constraints for
 	 * @param {array} options.indices - array property names to define binary indexes for
@@ -172,6 +173,13 @@ class Collection extends FenrirEventEmitter {
 
 		// for de-serialization purposes
 		this.flushChanges();
+	}
+
+	/**
+	 * Deletes all data of this collection and nukes all data in the persistent storage.
+	 */
+	nuke(){
+		//TODO
 	}
 
 	createChange(name, op, obj) {
