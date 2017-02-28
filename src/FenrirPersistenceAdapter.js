@@ -15,13 +15,24 @@ class FenrirPersistenceAdapter {
 	 * @param {String} indexEntryIdentifierProperty The identifying property of an index entry. Normally $fenrirIndex
 	 * @param {Object} options Arbitrary options necessary for derived implementations of this class.
 	 */
-	constructor(objectIdentifierProperty = '$fenrir', indexEntryIdentifierProperty = '$fenrirIndex', options = {}) {
+	constructor(collection, objectIdentifierProperty = '$fenrir', indexEntryIdentifierProperty = '$fenrirIndex', options = {}) {
 		if (new.target === FenrirPersistenceAdapter) {
 			throw new TypeError("Cannot use FenrirPersistenceAdapter directly. Use a derived class");
 		}
 		this.objectIdentifierProperty = objectIdentifierProperty;
 		this.indexEntryIdentifierProperty = indexEntryIdentifierProperty;
 		this.options = options;
+		// bind collection fields to the persistence adapter
+		this.collection = collection;
+		this.collection.data._push = this.collection.data.push;
+		this.collection.data.push = (obj) => {
+			this.addObject(obj);
+			this.collection.data._push(obj);
+		};
+		this.collection.idIndex._push = this.collection.idIndex.push;
+		this.collection.idIndex.push = ($loki) => {
+			this.collection.idIndex._push($loki);
+		}
 	}
 
 	/**
@@ -80,6 +91,9 @@ class FenrirPersistenceAdapter {
 	}
 
 	getObjectList(collection){
+	}
+
+	nukeStorage(){
 	}
 
 }
