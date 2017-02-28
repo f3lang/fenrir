@@ -1,7 +1,8 @@
 const FenrirEventEmitter = require('./FenrirEventEmitter');
 const Configuration = require('./Configuration');
 const Collection = require('./Collection/Collection');
-const uuid = require('uuis').v4;
+const uuid = require('uuid').v4;
+const path = require('path');
 
 const API_VERSION = 1;
 
@@ -84,7 +85,7 @@ class Fenrir extends FenrirEventEmitter {
 			options: options
 		};
 
-		let collection = new Collection(name, Object.assign(options, {persistenceAdapter: this.options.persistenceAdapter}));
+		let collection = new Collection(name, Object.assign(options, {persistenceAdapter: this.options.persistenceAdapter, identifier: collectionConfiguration.identifier}));
 		this.collections[collectionConfiguration.identifier] = collection;
 		if (this.config.get('verbose')) {
 			collection.console = console;
