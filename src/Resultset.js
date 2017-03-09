@@ -29,7 +29,7 @@ class Resultset extends Array{
 
 
 
-	reset = function () {
+	reset() {
 		if (this.filteredrows.length > 0) {
 			this.filteredrows = [];
 		}
@@ -102,13 +102,6 @@ class Resultset extends Array{
 
 		return result;
 	}
-
-	/**
-	 * Alias of copy()
-	 * @memberof Resultset
-	 */
-	branch = Resultset.prototype.copy;
-
 	/**
 	 * transform() - executes a named collection transform or raw array of transform steps against the resultset.
 	 *
@@ -346,8 +339,6 @@ class Resultset extends Array{
 		return this;
 	}
 
-	$or = Resultset.prototype.findOr;
-
 	/**
 	 * findAnd() - oversee the operation of AND'ed query expressions.
 	 *    AND'ed expression evaluation runs each expression progressively against the full collection,
@@ -368,9 +359,6 @@ class Resultset extends Array{
 		}
 		return this;
 	}
-
-	$and = Resultset.prototype.findAnd;
-
 	/**
 	 * Used for querying via a mongo-style query object.
 	 *

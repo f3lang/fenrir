@@ -15,6 +15,7 @@ class Collection extends FenrirEventEmitter {
 	 * @param {string} name - collection name
 	 * @param {(array|object)=} options - (optional) array of property names to be indicized OR a configuration object
 	 * @param {string} options.persistenceAdapter The persistence adapter to use
+	 * @param {string} options.identifier The unique identifier of the collection
 	 * @param {array} options.unique - array of property names to define unique constraints for
 	 * @param {array} options.exact - array of property names to define exact constraints for
 	 * @param {array} options.indices - array property names to define binary indexes for
@@ -92,6 +93,8 @@ class Collection extends FenrirEventEmitter {
 			});
 		}
 
+		// the unique identifier of this collection
+		this.identifier = options.identifier;
 		// if set to true we will optimally keep indices 'fresh' during insert/update/remove ops (never dirty/never needs rebuild)
 		// if you frequently intersperse insert/update/remove ops between find ops this will likely be significantly faster option.
 		this.adaptiveBinaryIndices = options.hasOwnProperty('adaptiveBinaryIndices') ? options.adaptiveBinaryIndices : true;
@@ -173,13 +176,18 @@ class Collection extends FenrirEventEmitter {
 
 		// for de-serialization purposes
 		this.flushChanges();
+
+		// init persistence adapter. This should be done at the end of the initialization, so all
+		// necessary configuration options are set in this collection
+		let Adapter = require('./PersistenceAdapters/' + options.persistenceAdapter);
+		this.persistenceAdapter = new Adapter(this);
 	}
 
 	/**
 	 * Deletes all data of this collection and nukes all data in the persistent storage.
 	 */
 	nuke(){
-		//TODO
+		this.persistenceAdapter.nukeStorage();
 	}
 
 	createChange(name, op, obj) {
@@ -968,8 +976,8 @@ class Collection extends FenrirEventEmitter {
 
 	/**
 	 * Perform binary range lookup for the data[dataPosition][binaryIndexName] property value
-	 *    Since multiple documents may contain the same value (which the index is sorted on),
-	 *    we hone in on range and then linear scan range to find exact index array position.
+	 * Since multiple documents may contain the same value (which the index is sorted on),
+	 * we hone in on range and then linear scan range to find exact index array position.
 	 * @param {int} dataPosition : coll.data array index/position
 	 * @param {string} binaryIndexName : index to search for dataPosition in
 	 */
