@@ -38,7 +38,7 @@ class FenrirPersistenceAdapter {
 			}
 		};
 
-		this.collection.data = new Proxy()
+		this.collection.data = new Proxy();
 
 		this.collection.data._push = this.collection.data.push;
 		this.collection.data.push = (obj) => {
@@ -59,6 +59,10 @@ class FenrirPersistenceAdapter {
 		this.collection.idIndex.push = ($loki) => {
 			this.collection.idIndex._push($loki);
 		}
+	}
+
+	addIndex(index) {
+
 	}
 
 	/**
@@ -124,6 +128,10 @@ class FenrirPersistenceAdapter {
 	}
 
 	nukeStorage(){
+	}
+
+	getIndices(){
+
 	}
 
 }

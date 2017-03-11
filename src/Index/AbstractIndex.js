@@ -11,13 +11,39 @@ class AbstractIndex {
 	rebuildIndex(){
 	}
 
-	addObject(object, identifier){
+	addDocument(object, identifier){
 	}
 
-	removeObject(identifier){
+	removeDocument(identifier){
 	}
 
-	findObject(fieldData){
+	findDocument(fieldData){
+	}
+
+	getUsageStat(){
+	}
+
+	/**
+	 * Returns the type of index as a string.
+	 */
+	getIndexType(){
+
+	}
+
+	/**
+	 * Get the data path this index uses in the documents.
+	 * @return string The path in the documents this index indices.
+	 */
+	getIndexPath(){
+
+	}
+
+	/**
+	 * Removes this index. This may happen if the collection notices, that the
+	 * index isn't used very much. By removing unused indices, you can save storage
+	 * and therefore the persistence will work faster.
+	 */
+	removeIndex(){
 
 	}
 

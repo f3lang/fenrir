@@ -48,6 +48,25 @@ class AbstractDataProvider {
 
 	}
 
+	/**
+	 * Inserts one or many objects into this data provider.
+	 * @param data {array|object}
+	 */
+	insert(data){
+		if(Array.isArray(data)) {
+			data.forEach(object => this.insertOne(object));
+		} else {
+			this.insertOne(object);
+		}
+	}
+
+	/**
+	 * Adds a new object to this data provider.
+	 * @param document The document to insert. Should not have a fenririd assigned already.
+	 */
+	insertOne(document){
+	}
+
 }
 
 module.exports = AbstractDataProvider;
