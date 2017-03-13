@@ -20,6 +20,14 @@ class AbstractIndex {
 	findDocument(fieldData){
 	}
 
+	/**
+	 * Retrieves an object including the statistics of this index.
+	 * This includes basically two values: The number of writes to this index
+	 * and the number of writes of this index. This allows collection
+	 * to determine, whether an index should be kept alive or killed and removed
+	 * from the collection. This will keep only useful indices alive and wont
+	 * overload the persistence layer.
+	 */
 	getUsageStat(){
 	}
 
@@ -27,7 +35,6 @@ class AbstractIndex {
 	 * Returns the type of index as a string.
 	 */
 	getIndexType(){
-
 	}
 
 	/**
@@ -35,7 +42,6 @@ class AbstractIndex {
 	 * @return string The path in the documents this index indices.
 	 */
 	getIndexPath(){
-
 	}
 
 	/**
@@ -44,7 +50,12 @@ class AbstractIndex {
 	 * and therefore the persistence will work faster.
 	 */
 	removeIndex(){
+	}
 
+	serialize(){
+	}
+
+	deserialize(serializedIndex){
 	}
 
 }
