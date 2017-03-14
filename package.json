@@ -39,6 +39,7 @@
   },
   "dependencies": {
     "dot-prop": "^4.1.1",
+    "functional-red-black-tree": "^1.0.1",
     "graceful-fs": "^4.1.11",
     "mkdirp": "^0.5.1",
     "unique-string": "^1.0.0",
