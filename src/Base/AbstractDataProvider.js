@@ -37,15 +37,12 @@ class AbstractDataProvider {
 	}
 
 	filter(filter) {
-
 	}
 
 	count() {
-
 	}
 
 	get(id) {
-
 	}
 
 	/**
