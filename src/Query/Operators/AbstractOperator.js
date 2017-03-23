@@ -1,16 +1,34 @@
 const QuestionableObject = require('../QuestionableObject');
 
 /**
- * The Abstract class for an index. We keep a list of indexes
+ * The Abstract class for an operator. We keep a list of indexes
  * objects available
  */
 class AbstractOperator extends QuestionableObject {
 
-	constructor() {
+	constructor(value) {
 		if(new.target === AbstractOperator) {
 			throw new TypeError('Cannot use AbstractOperator directly, please use derived class');
 		}
 		this.queryCount = 0;
+	}
+
+	/**
+	 * Returns a groupIdentifier to group multiple created operators together.
+	 * By counting the queries for one group, the collection can decide to
+	 * create a new index over frequently used fields.
+	 */
+	getGroupIdentifier(){
+	}
+
+	/**
+	 *
+	 * @param index
+	 */
+	setIndex(index){
+	}
+
+	removeIndex(){
 	}
 
 	/**

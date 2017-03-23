@@ -1,6 +1,8 @@
-const QuestionableObject = require('../QuestionableObject');
+const AbstractOperator = require('./AbstractOperator');
 
-class eq extends QuestionableObject{
+class eq extends AbstractOperator{
+
+
 
 }
 
