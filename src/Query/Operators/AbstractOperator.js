@@ -1,16 +1,20 @@
 const QuestionableObject = require('../QuestionableObject');
 
 /**
- * The Abstract class for an operator. We keep a list of indexes
- * objects available
+ * The Abstract class for an operator.
+ * @author Wolfgang Felbermeier <wf@felbermeier.com>
  */
 class AbstractOperator extends QuestionableObject {
 
-	constructor(value) {
-		if(new.target === AbstractOperator) {
+	constructor(query, valueIndex) {
+		super();
+		if (new.target === AbstractOperator) {
 			throw new TypeError('Cannot use AbstractOperator directly, please use derived class');
 		}
-		this.queryCount = 0;
+		this.query = query;
+		this.valueIndex = valueIndex;
+		//The accessorCache caches precompiled object accessors, so they don't need to be recompiled every time
+		this.accessorCache = {};
 	}
 
 	/**
@@ -18,41 +22,52 @@ class AbstractOperator extends QuestionableObject {
 	 * By counting the queries for one group, the collection can decide to
 	 * create a new index over frequently used fields.
 	 */
-	getGroupIdentifier(){
+	getGroupIdentifier() {
 	}
 
 	/**
 	 *
 	 * @param index
 	 */
-	setIndex(index){
+	setIndex(index) {
 	}
 
-	removeIndex(){
+	removeIndex() {
 	}
 
 	/**
-	 * Queries the Operator
-	 * @param field
-	 * @param value
-	 * @param index
+	 * Applies this operator on the given dataSet
+	 * @param dataSet
 	 */
-	query(field, value, index = null) {
+	applyOn(dataSet) {
+		return dataSet.length > 0 ? this._applyOn(dataSet) : [];
+	}
+
+	/**
+	 * This method is internally called by the operator and performs the action.
+	 * @param dataSet
+	 * @returns {*}
+	 * @private
+	 */
+	_applyOn(dataSet) {
+		return dataSet;
 	}
 
 	/**
 	 * Returns the index name, this operator needs.
 	 * e.g. the eq operator would work with the BTreeIndex
 	 */
-	getDemandedIndex(){
+	getDemandedIndex() {
 	}
 
-	serialize(){
+	serialize() {
 
 	}
 
-	deserialize(){
+	deserialize() {
 
 	}
 
 }
+
+module.exports = AbstractOperator;

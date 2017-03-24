@@ -7,16 +7,16 @@ const AbstractFertileOperation = require('./AbstractFertileOperation');
 class and extends AbstractFertileOperation {
 
 	/**
-	 * We opt out as soon as possible by just using the previously
-	 * positive tested values for the next query.
-	 * @param collection
 	 * @param dataSet
 	 * @returns {Array|*}
 	 * @private
 	 */
-	_resolve(collection, dataSet) {
+	_resolve(dataSet) {
+		// We opt out as soon as possible by just using the previously
+		// positive tested values for the next query.
 		let intermediateResult = dataSet.slice();
-		return this.childOperations.map(childOperation => intermediateResult = intermediateResult.length > 0 ? childOperation.resolve(collection, intermediateResult) : []);
+		this.childOperations.map(childOperation => intermediateResult = intermediateResult.length > 0 ? childOperation.resolve(intermediateResult) : []);
+		return intermediateResult;
 	}
 
 }

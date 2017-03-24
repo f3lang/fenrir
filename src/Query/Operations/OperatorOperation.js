@@ -14,8 +14,8 @@ class OperatorOperation extends AbstractOperation {
 		this.operator = operator;
 	}
 
-	_resolve(object) {
-		this.operator.query(object);
+	_resolve(dataSet) {
+		return this.operator.applyOn(dataSet);
 	}
 
 }

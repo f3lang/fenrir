@@ -21,8 +21,8 @@ class AbstractOperation {
 	 * @param collection
 	 * @param dataSet
 	 */
-	resolve(collection, dataSet){
-		return dataSet.length > 0 ? this._resolve(collection, dataSet) : [];
+	resolve(dataSet){
+		return dataSet.length > 0 ? this._resolve(dataSet) : [];
 	}
 
 	/**
@@ -30,7 +30,7 @@ class AbstractOperation {
 	 * @param collection
 	 * @param dataSet
 	 */
-	_resolve(collection, dataSet) {
+	_resolve(dataSet) {
 	}
 
 }

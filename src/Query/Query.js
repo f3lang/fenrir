@@ -42,15 +42,16 @@ class Query {
 	compileQueryDefinition(queryDefinition, path) {
 		return Object.keys(queryDefinition).map(key => {
 			let operationDefinition = queryDefinition[key];
-			let pathSegment = Object.keys(operationDefinition)[0];
 			if (Array.isArray(operationDefinition)) {
-				let OPERATION = require('./Operations/'+pathSegment);
-				return new OPERATION(this.collection, operationDefinition.map(definition => this.compileQueryDefinition(definition)));
-			}else{
-				let OPERATOR = require('./Operators/' + pathSegment);
-				this.pointerMap[path+'/'+pathSegment] = operationDefinition[pathSegment];
-				this.pointerDataMap[path+'/'+pathSegment] = this.operatorDataStorage.push(this.pointerDataMap[path+'/'+pathSegment]) - 1;
-				let operator = new OPERATOR();
+				let OPERATION = require('./Operations/' + key);
+				return new OPERATION(this.collection, operationDefinition.map(definition => this.compileQueryDefinition(definition, path+'/'+key)));
+			} else {
+				let pathSegment = key + '/' +Object.keys(operationDefinition)[0];
+				let OPERATOR = require('./Operators/' + key);
+				this.pointerMap[path + '/' + pathSegment] = operationDefinition;
+				let index = this.operatorDataStorage.push(this.pointerMap[path + '/' + pathSegment]) - 1;
+				this.pointerDataMap[path + '/' + pathSegment] = index;
+				let operator = new OPERATOR(this, index);
 				// since only operator operations have an object as a child,
 				// we can assume, that we have an operator operation at
 				// this point of the query definition
@@ -83,25 +84,25 @@ class Query {
 	 * @param dataSet {Array} The data to execute the query on.
 	 */
 	run(collection, dataSet) {
-
+		return this.rootOperation.resolve(dataSet);
 	}
 
 
 	/**
-	 * Checks, whether an object matches this query. This function is used by the caching process to
+	 * Checks, whether a single object matches this query. This function is used by the caching process to
 	 * associate new or modified objects to existing ResultSets.
 	 * @param object The object to check
 	 * @return boolean True, if the object matches this query
 	 */
 	objectMatches(object) {
-		this.rootOperation.resolve(object);
+		return this.rootOperation.resolve([object]).length > 0;
 	}
 
 	/**
 	 * Returns a map of all query data objects used in this query. This offers a way to reuse this query
 	 * instance with different values for the operators.
 	 */
-	getPointerMap(){
+	getPointerMap() {
 		return this.pointerMap;
 	}
 
