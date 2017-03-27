@@ -17,6 +17,10 @@ class IndexManager {
 
 	}
 
+	createIndex(path, type){
+
+	}
+
 }
 
 module.exports = IndexManager;

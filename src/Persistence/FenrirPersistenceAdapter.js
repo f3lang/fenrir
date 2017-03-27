@@ -24,41 +24,7 @@ class FenrirPersistenceAdapter {
 		this.options = options;
 		// bind collection fields to the persistence adapter
 		this.collection = collection;
-
-		// The recursive Object handler implements an object watcher, so we can save every change
-		// made to objects
-		let recursiveHandler = {
-			set: (target, key, value) => {
-				this.updateObject(target, key);
-				if(typeof value === 'object') {
-					target[key] = new Proxy(value, recursiveHandler);
-				}else{
-					target[key] = value;
-				}
-			}
-		};
-
-		this.collection.data = new Proxy();
-
-		this.collection.data._push = this.collection.data.push;
-		this.collection.data.push = (obj) => {
-			this.addObject(obj);
-			this.collection.data._push(obj);
-		};
-
-		this.collection.data = {
-			get length() {
-				return 0;
-			},
-			push(object) {
-
-			}
-		};
-
-		this.collection.idIndex._push = this.collection.idIndex.push;
-		this.collection.idIndex.push = ($loki) => {
-			this.collection.idIndex._push($loki);
-		}
+		this.data =
 	}
 
 	addIndex(index) {
