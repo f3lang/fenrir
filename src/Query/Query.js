@@ -79,6 +79,16 @@ class Query {
 	}
 
 	/**
+	 * Calculates the structural signature of a query definition, so already existing
+	 * queries with the same structure may be reused as some sort of prepared statements.
+	 *
+	 * @param queryDefinition {Object} The query definition object as described in this class.
+	 */
+	static getQueryDefinitionStructureSignature(queryDefinition) {
+		
+	}
+
+	/**
 	 * Runs this query on the given collection and returns the result wrapped in a Promise
 	 * @param collection {Collection} The collection to run the query on
 	 * @param dataSet {Array} The data to execute the query on.
