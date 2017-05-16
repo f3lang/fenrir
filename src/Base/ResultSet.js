@@ -43,10 +43,9 @@ class ResultSet extends AbstractDataProvider {
 		return resultSet;
 	}
 
-	insertOne(document){
+	insertOne(document) {
 		if(this.query.objectMatches(document)) {
-			this._data[object['$fenrir']] = document;
-			this.resultData[]
+			this._data[document['$fenrir']] = document;
 			this.trackedChildResultSets.forEach(resultSet => resultSet.insertOne(document));
 		}
 	}

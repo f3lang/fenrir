@@ -2,6 +2,8 @@ const AbstractDataProvider = require('./AbstractDataProvider');
 const DocumentError = require('../Error/DocumentError');
 const ResultSet = require('./ResultSet');
 const Query = require('../Query/Query');
+const PerformanceManager = require('./PerformanceManager');
+const IndexManager = require('./IndexManager');
 
 const STANDARD_INDICES = [
 	{type: 'id', field: '$fenrir'}
@@ -33,6 +35,8 @@ class Collection extends AbstractDataProvider {
 			}
 		});
 		this.trackedResultSets = [];
+		this.performanceManager = new PerformanceManager(this);
+		this.indexManager = new IndexManager(this);
 	}
 
 	addIndex(index) {
@@ -47,6 +51,7 @@ class Collection extends AbstractDataProvider {
 	}
 
 	createIndex(type, path) {
+		//TODO extract this logic to the index manager
 		const Index = require('../Index/' + type + 'Index');
 		let idx = new Index(this, path);
 		this.addIndex(index);
@@ -70,7 +75,7 @@ class Collection extends AbstractDataProvider {
 		return resultSet;
 	}
 
-	data(){
+	data() {
 		return this._data.getDataSet();
 	}
 
