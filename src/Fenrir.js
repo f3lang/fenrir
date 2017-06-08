@@ -1,6 +1,6 @@
 const FenrirEventEmitter = require('./FenrirEventEmitter');
 const Configuration = require('./Configuration');
-const Collection = require('./Collection/Collection');
+const Collection = require('./Base/Collection');
 const uuid = require('uuid').v4;
 const path = require('path');
 

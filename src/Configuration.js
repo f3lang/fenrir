@@ -20,8 +20,8 @@ const writeFileOptions = {mode: 0o0600};
  * @copyright Sindre Sorhus <sindresorhus@gmail.com>
  */
 class Configuration {
-	constructor(defaults, path) {
-		this.path = path.join(path, 'fenrir.json');
+	constructor(defaults, filepath) {
+		this.path = path.join(filepath, 'fenrir.json');
 		this.all = Object.assign({}, defaults, this.all);
 	}
 
