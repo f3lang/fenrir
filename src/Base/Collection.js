@@ -65,6 +65,7 @@ class Collection extends AbstractDataProvider {
 		document.$fenrir = this.indexTypeMap.Id.$fenrir.getLastIndex() + 1;
 		this._data.push(document);
 		this.trackedResultSets[i].forEach(resultSet => resultSet.insertOne(document));
+		this.indexManager.addDocument(document);
 	}
 
 	find(query, keep = false) {
@@ -77,6 +78,14 @@ class Collection extends AbstractDataProvider {
 
 	data() {
 		return this._data.getDataSet();
+	}
+
+	getPerformanceManager(){
+		return this.performanceManager;
+	}
+
+	getPersistenceManager(){
+		return this.persistenceAdapter;
 	}
 
 }

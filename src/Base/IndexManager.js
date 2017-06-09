@@ -12,20 +12,55 @@ class IndexManager {
 
 	constructor(collection) {
 		this.collection = collection;
+		this.performanceManager = collection.getPerformanceManager();
+		this.persistenceManager = collection.getPersistenceManager();
+		this.indexPathMap = {};
 	}
 
-    /**
-	 *
-     * @param path
-     * @param type
-	 * @returns The index, if there is an index  available in the corresponding collection. Returns false,
-	 * if the requested index is not available.
-     */
+	/**
+	 * Returns an index for the requested path and type. Returns null, if there is no index present
+	 * @param path The path in the documents to use
+	 * @param type The requested index type
+	 */
 	getIndex(path, type) {
-		this.collection.performan
+		this.performanceManager.recordIndexRequestAction(path, type);
+		return this.indexPathMap[path] && this.indexPathMap[path][type] ? this.indexPathMap[path][type] : null;
 	}
 
 	createIndex(path, type) {
+		const Index = require('../Index/' + type + 'Index');
+		let idx = new Index(this.collection, path);
+		this.addIndex(idx);
+	}
+
+	nukeIndex(path, type){
+		let index = this.indexPathMap[path][type];
+		this.removeIndex(index);
+		index.nuke();
+	}
+
+	nukeIndicesByPath(path){
+
+	}
+
+	/**
+	 * Adds an index to the internal index management system.
+	 * @param index The index to track
+	 */
+	addIndex(index) {
+		let path = index.getIndexPath();
+		let type = index.getIndexType();
+		this.indexPathMap[path] = this.indexPathMap[path] || {};
+		this.indexPathMap[path][type] = index;
+	}
+
+	removeIndex(index){
+		let path = index.getIndexPath();
+		let type = index.getIndexType();
+		delete this.indexPathMap[path][type];
+	}
+
+	addDocument(document) {
 
 	}
 

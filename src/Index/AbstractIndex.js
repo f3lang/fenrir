@@ -49,7 +49,7 @@ class AbstractIndex {
 	 * index isn't used very much. By removing unused indices, you can save storage
 	 * and therefore the persistence will work faster.
 	 */
-	removeIndex(){
+	nuke(){
 	}
 
 	serialize(){
