@@ -18,14 +18,14 @@ class BTreeIndex extends AbstractIndex {
 	}
 
 	addDocument(document){
-		let value = ObjectHelper.getValueByPath(document, this.path);
+		let value = this.collection.getCacheManager().getObjectAccessor(this.path)(document);
 		this.indexValue(value, document.$fenrir);
 	}
 
 	indexValue(value, $fenrir){
 		let currentTreeEntryIterator = this.tree.find(value);
 		if(currentTreeEntryIterator.value) {
-			this.tree = currentTreeEntryIterator.update(Array.concat(currentTreeEntryIterator.value, [$fenrir]));
+			this.tree = currentTreeEntryIterator.update(currentTreeEntryIterator.value.concat($fenrir));
 		} else {
 			this.tree = this.tree.insert(value, [$fenrir]);
 		}
@@ -43,6 +43,7 @@ class BTreeIndex extends AbstractIndex {
 	}
 
 	findDocument(fieldData) {
+		console.log('find data:', fieldData);
 		return this.tree.find(fieldData).value;
 	}
 

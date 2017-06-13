@@ -5,19 +5,22 @@
  */
 class AbstractIndex {
 
-	constructor(collection, field){
+	constructor(collection, path) {
+		this.collection = collection;
+		this.path = path;
+		this.type = 'Abstract';
 	}
 
-	rebuildIndex(){
+	rebuildIndex() {
 	}
 
-	addDocument(object, identifier){
+	addDocument(object, identifier) {
 	}
 
-	removeDocument(identifier){
+	removeDocument(identifier) {
 	}
 
-	findDocument(fieldData){
+	findDocument(fieldData) {
 	}
 
 	/**
@@ -28,20 +31,21 @@ class AbstractIndex {
 	 * from the collection. This will keep only useful indices alive and wont
 	 * overload the persistence layer.
 	 */
-	getUsageStat(){
+	getUsageStat() {
 	}
 
 	/**
 	 * Returns the type of index as a string.
 	 */
-	getIndexType(){
+	getIndexType() {
+		return this.type;
 	}
 
 	/**
 	 * Get the data path this index uses in the documents.
-	 * @return string The path in the documents this index indices.
 	 */
-	getIndexPath(){
+	getIndexPath() {
+		return this.path;
 	}
 
 	/**
@@ -49,13 +53,16 @@ class AbstractIndex {
 	 * index isn't used very much. By removing unused indices, you can save storage
 	 * and therefore the persistence will work faster.
 	 */
-	nuke(){
+	nuke() {
 	}
 
-	serialize(){
+	serialize() {
 	}
 
-	deserialize(serializedIndex){
+	deserialize(serializedIndex) {
+	}
+
+	isDirty() {
 	}
 
 }

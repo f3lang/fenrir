@@ -26,10 +26,11 @@ class AbstractOperator extends QuestionableObject {
 	}
 
 	/**
-	 *
+	 * Sets the index, that should be used for this operator.
 	 * @param index
 	 */
 	setIndex(index) {
+		this.index = index;
 	}
 
 	removeIndex() {

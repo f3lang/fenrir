@@ -9,6 +9,7 @@ class IdIndex extends AbstractIndex {
 
 	constructor(collection) {
 		super(collection, '$fenrir');
+		this.type = 'Id';
 		this.lastIndex = 0;
 	}
 

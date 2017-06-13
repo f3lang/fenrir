@@ -4,9 +4,10 @@ const ResultSet = require('./ResultSet');
 const Query = require('../Query/Query');
 const PerformanceManager = require('./PerformanceManager');
 const IndexManager = require('./IndexManager');
+const CacheManager = require('./CacheManager');
 
 const STANDARD_INDICES = [
-	{type: 'id', field: '$fenrir'}
+	{type: 'Id', field: '$fenrir'}
 ];
 
 /**
@@ -24,47 +25,36 @@ class Collection extends AbstractDataProvider {
 		super();
 		this.persistenceAdapter = persistenceAdapter;
 		this._data = persistenceAdapter.data;
-		this.indexSignatureMap = {};
-		this.indexTypeMap = {};
-		this.indexPathMap = {};
-		this.indexMap = [];
-		persistenceAdapter.getIndices().forEach(index => this.addIndex(index));
-		STANDARD_INDICES.forEach(indexDefinition => {
-			if (!this.indexSignatureMap[indexDefinition.type + indexDefinition.path]) {
-				this.createIndex(indexDefinition.type, indexDefinition.path);
-			}
-		});
+
 		this.trackedResultSets = [];
 		this.performanceManager = new PerformanceManager(this);
 		this.indexManager = new IndexManager(this);
+		this.cacheManager = new CacheManager(this);
+
+		persistenceAdapter.getIndices().forEach(index => this.addIndex(index));
+		STANDARD_INDICES.forEach(indexDefinition => this.indexManager.createIndex(indexDefinition.field, indexDefinition.type));
 	}
 
-	addIndex(index) {
-		let path = index.getIndexPath();
-		let type = index.getIndexType();
-		this.indexTypeMap[type] = this.indexTypeMap[type] || {};
-		this.indexTypeMap[type][path] = index;
-		this.indexPathMap[path] = this.indexPathMap[path] || {};
-		this.indexPathMap[path][type] = index;
-		this.indexSignatureMap[type + path] = index;
-		this.indexMap.push(index);
-	}
-
-	createIndex(type, path) {
-		//TODO extract this logic to the index manager
-		const Index = require('../Index/' + type + 'Index');
-		let idx = new Index(this, path);
-		this.addIndex(index);
-		this.persistenceAdapter.addIndex(index);
+	/**
+	 *
+	 * @param documents {array|object}
+	 */
+	insert(documents) {
+		if(Array.isArray(documents)) {
+			let i = documents.length;
+			while(i--) {
+				this.insertOne(documents[i]);
+			}
+		}
 	}
 
 	insertOne(document) {
-		if (document['$fenrir'] && this.indexTypeMap.Id.$fenrir.findDocument(document['$fenrir'])) {
+		if (document['$fenrir'] && this.indexManager.getIndex('$fenrir', 'Id').findDocument(document['$fenrir'])) {
 			throw new DocumentError('1-002', 'Document has already $fenrirId, that is used in the database', {document});
 		}
-		document.$fenrir = this.indexTypeMap.Id.$fenrir.getLastIndex() + 1;
-		this._data.push(document);
-		this.trackedResultSets[i].forEach(resultSet => resultSet.insertOne(document));
+		document.$fenrir = this.indexManager.getIndex('$fenrir', 'Id').getLastIndex() + 1;
+		this._data[document.$fenrir] = document;
+		this.trackedResultSets.forEach(resultSet => resultSet.insertOne(document));
 		this.indexManager.addDocument(document);
 	}
 
@@ -77,7 +67,7 @@ class Collection extends AbstractDataProvider {
 	}
 
 	data() {
-		return this._data.getDataSet();
+		return this._data;
 	}
 
 	getPerformanceManager(){
@@ -86,6 +76,14 @@ class Collection extends AbstractDataProvider {
 
 	getPersistenceManager(){
 		return this.persistenceAdapter;
+	}
+
+	getIndexManager(){
+		return this.indexManager;
+	}
+
+	getCacheManager(){
+		return this.cacheManager;
 	}
 
 }

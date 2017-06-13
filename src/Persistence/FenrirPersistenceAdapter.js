@@ -24,7 +24,6 @@ class FenrirPersistenceAdapter {
 		this.options = options;
 		// bind collection fields to the persistence adapter
 		this.collection = collection;
-		this.data =
 	}
 
 	addIndex(index) {

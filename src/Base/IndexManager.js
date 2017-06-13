@@ -15,6 +15,7 @@ class IndexManager {
 		this.performanceManager = collection.getPerformanceManager();
 		this.persistenceManager = collection.getPersistenceManager();
 		this.indexPathMap = {};
+		this.indexCollection = [];
 	}
 
 	/**
@@ -23,6 +24,7 @@ class IndexManager {
 	 * @param type The requested index type
 	 */
 	getIndex(path, type) {
+		console.log('Index request:', path, type);
 		this.performanceManager.recordIndexRequestAction(path, type);
 		return this.indexPathMap[path] && this.indexPathMap[path][type] ? this.indexPathMap[path][type] : null;
 	}
@@ -52,6 +54,7 @@ class IndexManager {
 		let type = index.getIndexType();
 		this.indexPathMap[path] = this.indexPathMap[path] || {};
 		this.indexPathMap[path][type] = index;
+		this.indexCollection.push(index);
 	}
 
 	removeIndex(index){
@@ -61,7 +64,10 @@ class IndexManager {
 	}
 
 	addDocument(document) {
-
+		let i = this.indexCollection.length;
+		while(i--) {
+			this.indexCollection[i].addDocument(document);
+		}
 	}
 
 }

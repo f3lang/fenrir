@@ -1,3 +1,5 @@
+const ObjectHelper = require('../Helper/ObjectHelper');
+
 /**
  * The CacheManager keeps track of various cache entries for collections:
  * - object accessor cache
@@ -34,10 +36,15 @@ class CacheManager {
 
 	/**
 	 * If a suitable object accessor is already cached for the collection,
-	 * this will return it. If no accessor is cached, this will return false.
+	 * this will return it. If no accessor is cached, this will be created.
 	 * @param propertyPath The propertypath for the objectAccessor
 	 */
 	getObjectAccessor(propertyPath) {
-		return this.objectAccessorCache[propertyPath] ? this.objectAccessorCache[propertyPath] : false;
+		if(!this.objectAccessorCache[propertyPath]) {
+			this.objectAccessorCache[propertyPath] = ObjectHelper.getCompiledObjectAccessor(propertyPath);
+		}
+		return this.objectAccessorCache[propertyPath];
 	}
 }
+
+module.exports = CacheManager;

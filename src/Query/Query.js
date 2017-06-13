@@ -29,14 +29,18 @@ class Query {
 		this.pointerMap = {};
 		this.operatorDataStorage = [];
 		this.pointerDataMap = {};
+		this.operatorsByPath = {};
 
 		this.rootOperation = this.compileQueryDefinition(queryDefinition, '');
+		this.indexUp = false;
+		this.updateIndices();
 	}
 
 	/**
 	 * Compiles a query definition to a resolvable chain of operations
 	 * @param queryDefinition
-	 * @param path
+	 * @param path The path inside of the query to resolve. By this you may convert parts
+	 * of the query definition to a query.
 	 * @return {AbstractOperation} An instance of an AbstractOperation
 	 */
 	compileQueryDefinition(queryDefinition, path) {
@@ -52,12 +56,27 @@ class Query {
 				let index = this.operatorDataStorage.push(this.pointerMap[path + '/' + pathSegment]) - 1;
 				this.pointerDataMap[path + '/' + pathSegment] = index;
 				let operator = new OPERATOR(this, index);
+				this.operatorsByPath[Object.keys(operationDefinition)[0]] = operator;
 				// since only operator operations have an object as a child,
 				// we can assume, that we have an operator operation at
 				// this point of the query definition
 				return new OperatorOperation(this.collection, operator);
 			}
 		})[0];
+	}
+
+	/**
+	 * Updates the indices stored in this query. It will save the required indices in the operators.
+	 * This method should be called every time something is changed on the query.
+	 */
+	updateIndices(){
+		Object.keys(this.operatorsByPath).map(path => {
+			let idxType = this.operatorsByPath[path].getDemandedIndex();
+			if(idxType) {
+				this.operatorsByPath[path].setIndex(this.collection.getIndexManager().getIndex(path, idxType));
+			}
+		});
+		this.indexUp = true;
 	}
 
 	/**
@@ -94,6 +113,7 @@ class Query {
 	 * @param dataSet {Array} The data to execute the query on.
 	 */
 	run(collection, dataSet) {
+		console.log(this.rootOperation.childOperations);
 		return this.rootOperation.resolve(dataSet);
 	}
 

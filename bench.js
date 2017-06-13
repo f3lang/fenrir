@@ -1,132 +1,46 @@
-class ArrayProxy extends Array{
+const Query = require('./src/Query/Query');
+const Collection = require('./src/Base/Collection');
 
-	constructor(){
-		super();
-		this.dataAvailable = [];
+let collection = new Collection({}, {data: {}, getIndices: () => []});
+collection.getIndexManager().createIndex('name', 'BTree');
+collection.getIndexManager().createIndex('surname', 'BTree');
+
+let query = new Query({
+	'and': [
+		{'eq': {'name': 'Thomas'}},
+		{'eq': {'surname': 'Buxhofer'}}
+	]
+}, collection);
+
+let testData = [
+	{name: 'Markus', surname: 'Nachbaur'},
+	{name: 'Matthias', surname: 'Buxhofer'},
+	{name: 'Michele', surname: 'Paonne'},
+	{name: 'Thomas', surname: 'Buxhofer'},
+	{name: 'Sandra', surname: 'Urach'},
+	{name: 'Silvijo', surname: 'Leben'},
+	{name: 'Stefan', surname: 'Hammerl'},
+	{name: 'Thomas', surname: 'Dallapiccola'},
+	{name: 'Torsten', surname: 'Passow'},
+	{name: 'Andreas', surname: 'Stückler'}
+];
+let benchData = [];
+let i = 1;
+while(i--){
+	let i2 = 10;
+	while(i2-- ) {
+		let doc = Object.assign({}, testData[i2]);
+		collection.insertOne(doc);
 	}
-
-	push(data){
-		super.push(data);
-		this.dataAvailable[super.length - 1] = true;
-	}
-
-	get(index){
-		return  this.dataAvailable[index] ? super[index] : 'blubber';
-	}
-
-	static get [Symbol.species] () {
-		return 'blubber3';
-	}
-
 }
+console.log("data count:", Object.values(collection.data()).length);
+console.time('single query');
+console.log(query.run(collection,collection.data()));
+console.timeEnd('single query');
 
-
-let arr = [];
-let obj = {};
-let prox = new Proxy(obj, {
-	get: (target, name, receiver) => {
-		return target[name] ? target[name] : 'blubb';
-	}
-});
-let easyProx = new Proxy(obj, {
-	get: obj.get,
-	set: (target, name, value) => {
-		target[name] = value;
-	}
-});
-let fastProx = new ArrayProxy();
-
-console.log('prepare');
-let i = 1000000;
+console.time('bench');
+i = 1;
 while(i--) {
-	arr.push('value' + i);
-	fastProx.push('value' + i);
-	obj[i] = 'value' + i;
+	query.run(collection, collection.data());
 }
-console.log('prepared datasets width 100M values');
-
-console.log('testing Array');
-console.time('array');
-i = 1000000;
-let testValue = '';
-while(i--) {
-	testValue = arr[i];
-	testValue = arr[i];
-	testValue = arr[i];
-	testValue = arr[i];
-	testValue = arr[i];
-	testValue = arr[i];
-	testValue = arr[i];
-	testValue = arr[i];
-	testValue = arr[i];
-	testValue = arr[i];
-}
-console.timeEnd('array');
-
-console.time('object');
-i = 1000000;
-testValue = '';
-while(i--) {
-	testValue = obj[i];
-	testValue = obj[i];
-	testValue = obj[i];
-	testValue = obj[i];
-	testValue = obj[i];
-	testValue = obj[i];
-	testValue = obj[i];
-	testValue = obj[i];
-	testValue = obj[i];
-	testValue = obj[i];
-}
-console.timeEnd('object');
-
-console.time('proxy');
-i = 1000000;
-testValue = '';
-while(i--) {
-	testValue = prox[i];
-	testValue = prox[i];
-	testValue = prox[i];
-	testValue = prox[i];
-	testValue = prox[i];
-	testValue = prox[i];
-	testValue = prox[i];
-	testValue = prox[i];
-	testValue = prox[i];
-	testValue = prox[i];
-}
-console.timeEnd('proxy');
-
-console.time('easy proxy');
-i = 1000000;
-testValue = '';
-while(i--) {
-	testValue = easyProx[i];
-	testValue = easyProx[i];
-	testValue = easyProx[i];
-	testValue = easyProx[i];
-	testValue = easyProx[i];
-	testValue = easyProx[i];
-	testValue = easyProx[i];
-	testValue = easyProx[i];
-	testValue = easyProx[i];
-	testValue = easyProx[i];
-}
-console.timeEnd('easy proxy');
-
-console.time('fast proxy');
-i = 1000000;
-testValue = '';
-while(i--) {
-	testValue = fastProx.get(i);
-	testValue = fastProx.get(i);
-	testValue = fastProx.get(i);
-	testValue = fastProx.get(i);
-	testValue = fastProx.get(i);
-	testValue = fastProx.get(i);
-	testValue = fastProx.get(i);
-	testValue = fastProx.get(i);
-	testValue = fastProx.get(i);
-	testValue = fastProx.get(i);
-}
-console.timeEnd('fast proxy');
+console.timeEnd('bench');
