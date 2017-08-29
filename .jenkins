@@ -1,0 +1,8 @@
+node {
+	stage ('checkout') {
+		checkout scm
+	}
+	stage ('echo') {
+		echo "blubb"
+	}
+}
