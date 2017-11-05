@@ -19,7 +19,7 @@ class ResultSet extends AbstractDataProvider {
 		this.dataProvider = dataProvider;
 		this.query = query;
 		this.trackedChildResultSets = [];
-		this._data = [];
+		this._data = {};
 		this.resolveQuery();
 	}
 

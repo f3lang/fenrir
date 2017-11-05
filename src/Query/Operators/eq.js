@@ -10,7 +10,6 @@ class eq extends AbstractOperator {
 	_applyOn(dataSet) {
 		let path = Object.keys(this.query.operatorDataStorage[this.valueIndex])[0];
 		let val = this.query.operatorDataStorage[this.valueIndex][path];
-		console.log("index in operator:", this.index);
 		if(this.index && !this.index.isDirty()) {
 			return this.index.findDocument(val).map($fenrir => dataSet[$fenrir]);
 		}

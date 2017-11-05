@@ -15,16 +15,16 @@ class FenrirPersistenceAdapter {
 	 * @param {String} indexEntryIdentifierProperty The identifying property of an index entry. Normally $fenrirIndex
 	 * @param {Object} options Arbitrary options necessary for derived implementations of this class.
 	 */
-	constructor(collection, objectIdentifierProperty = '$fenrir', indexEntryIdentifierProperty = '$fenrirIndex', options = {}) {
+	constructor(objectIdentifierProperty = '$fenrir', indexEntryIdentifierProperty = '$fenrirIndex', options = {}) {
 		if (new.target === FenrirPersistenceAdapter) {
-			throw new TypeError("Cannot use FenrirPersistenceAdapter directly. Use a derived class");
+			throw new TypeError('Cannot use FenrirPersistenceAdapter directly. Use a derived class');
 		}
 		this.objectIdentifierProperty = objectIdentifierProperty;
 		this.indexEntryIdentifierProperty = indexEntryIdentifierProperty;
 		this.options = options;
-		// bind collection fields to the persistence adapter
-		this.collection = collection;
+		this.data = {};
 	}
+
 
 	addIndex(index) {
 
@@ -60,10 +60,10 @@ class FenrirPersistenceAdapter {
 	removeIndexEntry(indexEntry) {
 	}
 
-	getIndexEntry(indexEntryIdentifier){
+	getIndexEntry(indexEntryIdentifier) {
 	}
 
-	getIndex(){
+	getIndex() {
 	}
 
 	/**
@@ -85,18 +85,18 @@ class FenrirPersistenceAdapter {
 	getObject(objectIdentifier, collection) {
 	}
 
-	getObjectList(collection){
+	getObjectList(collection) {
 	}
 
-	getObjectCount(collection){
+	getObjectCount(collection) {
 
 	}
 
-	nukeStorage(){
+	nukeStorage() {
 	}
 
-	getIndices(){
-
+	getIndices() {
+		return [];
 	}
 
 }

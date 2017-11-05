@@ -15,6 +15,7 @@ class OperatorOperation extends AbstractOperation {
 	}
 
 	_resolve(dataSet) {
+		console.log("Operator operation should resolve:", dataSet);
 		return this.operator.applyOn(dataSet);
 	}
 

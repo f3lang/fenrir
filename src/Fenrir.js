@@ -53,24 +53,30 @@ class Fenrir extends FenrirEventEmitter {
 		let collections = this.config.get('collections');
 
 		collections.forEach(collection => {
-			this.collections[collection.identifier] = new Collection(collection.name, collection.options);
-			this.collectionNameMap[collection.name] = this.collections[collection.identifier];
+			let col = new Collection(this, collection.options);
+			this.collections[collection.identifier] = col;
+			this.collectionNameMap[collection.name] = col;
+			const PERSISTENCE_ADAPTER = require('./Persistence/PersistenceAdapters/' + collection.options.persistenceAdapter);
+			let persistenceAdapter = new PERSISTENCE_ADAPTER(
+				collection.options.objectIdentifierProperty,
+				collection.options.indexEntryIdentifierProperty,
+				collection.options.persistenceAdapterOptions
+			);
+			col.attachPersistenceAdapter(persistenceAdapter);
 		});
 	}
 
 	/**
 	 * Adds a collection to the database.
 	 * @param {string} name - name of collection to add
-	 * @param {object=} options - (optional) options to configure collection with.
+	 * @param {object=} options - (optional) options to configure collection with, if not already existent.
+	 * @param {string} options.persistenceAdapter The persistence adapter type to use for this collection. Defaults
+	 * to File
+	 * @param {string} options.objectIdentifierProperty The object identifier for documents
+	 * @param {string} options.indexEntryIden
+	 * @param {object} options.persistenceAdapterOptions The options to initialize the persistence adapter. Defaults
+	 * to the default options for the selected persistence adapter.
 	 * @param {array} options.unique - array of property names to define unique constraints for
-	 * @param {array} options.exact - array of property names to define exact constraints for
-	 * @param {array} options.indices - array property names to define binary indexes for
-	 * @param {boolean} options.asyncListeners - default is false
-	 * @param {boolean} options.disableChangesApi - default is true
-	 * @param {boolean} options.autoupdate - use Object.observe to update objects automatically (default: false)
-	 * @param {boolean} options.clone - specify whether inserts and queries clone to/from user
-	 * @param {string} options.cloneMethod - 'parse-stringify' (default), 'jquery-extend-deep', 'shallow'
-	 * @param {int} options.ttlInterval - time interval for clearing out 'aged' documents; not set by default.
 	 * @returns {Collection} a reference to the collection which was just added
 	 * @memberof Fenrir
 	 */
@@ -79,13 +85,22 @@ class Fenrir extends FenrirEventEmitter {
 			return this.collectionNameMap[name];
 		}
 
+		let defaultCollectionOptions = {
+			persistenceAdapter: 'File',
+			persistenceAdapterOptions: {},
+			unique: [],
+		};
+
 		let collectionConfiguration = {
 			identifier: uuid(),
 			name: name,
-			options: options
+			options: Object.assign(defaultCollectionOptions, options)
 		};
 
 		let collection = new Collection(name, Object.assign(options, {persistenceAdapter: this.options.persistenceAdapter, identifier: collectionConfiguration.identifier}));
+		let persistenceAdapter = new (require('./Persistence/PersistenceAdapters/'+options.persistenceAdapter))();
+		collection.attachPersistenceAdapter(persistenceAdapter);
+
 		this.collections[collectionConfiguration.identifier] = collection;
 		if (this.config.get('verbose')) {
 			collection.console = console;

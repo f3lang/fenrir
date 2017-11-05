@@ -28,7 +28,7 @@ describe("Query logic", function() {
 			}, {});
 			expect(query.objectMatches({name: 'Meier', surname: 'Max'})).to.equal(true);
 			expect(query.objectMatches({name: 'Mustermann', surname: 'Max'})).to.equal(false);
-			console.time("bench 100.000");
+			console.time("bench 100.000");d
 			let i = 100000;
 			while(i--) {
 				query.objectMatches({name: 'Mustermann', surname: 'Max'});

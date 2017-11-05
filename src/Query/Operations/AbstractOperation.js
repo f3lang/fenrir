@@ -21,8 +21,8 @@ class AbstractOperation {
 	 * @param collection
 	 * @param dataSet
 	 */
-	resolve(dataSet){
-		return dataSet.length > 0 ? this._resolve(dataSet) : [];
+	resolve(dataSet) {
+		return Object.keys(dataSet).length > 0 ? this._resolve(dataSet) : [];
 	}
 
 	/**

@@ -34,6 +34,7 @@ class Query {
 		this.rootOperation = this.compileQueryDefinition(queryDefinition, '');
 		this.indexUp = false;
 		this.updateIndices();
+		console.log(this.rootOperation);
 	}
 
 	/**
@@ -113,7 +114,7 @@ class Query {
 	 * @param dataSet {Array} The data to execute the query on.
 	 */
 	run(collection, dataSet) {
-		console.log(this.rootOperation.childOperations);
+		console.log("query should resolve:", dataSet);
 		return this.rootOperation.resolve(dataSet);
 	}
 

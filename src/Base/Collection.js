@@ -13,23 +13,45 @@ const STANDARD_INDICES = [
 /**
  * The Collection is the base class to handle the data of a database.
  * One database may hold multiple collections
+ *
+ * The data is organized in two different fields. On one hand we have
+ * the _data field, which holds all the data of the collection.
+ * This field is used for the creation of ResultSets and Querying the data
+ * The _dataMap field is basically a map from the data index to the actual
+ * document inside the _data field. If a document is not available in the _d
  * @author Wolfgang Felbermeier <wf@felbermeier.com>
  */
 class Collection extends AbstractDataProvider {
 
 	/**
 	 * @param fenrir The database, this collection is associated to
-	 * @param persistenceAdapter The persistence adapter responsible for this collection
+	 * @param options The options to init this collection
 	 */
-	constructor(fenrir, persistenceAdapter) {
+	constructor(fenrir, options) {
 		super();
-		this.persistenceAdapter = persistenceAdapter;
-		this._data = persistenceAdapter.data;
+
+		let defaultOptions = {};
+		this.fenrir = fenrir;
+		this.options = Object.assign(defaultOptions, options);
 
 		this.trackedResultSets = [];
 		this.performanceManager = new PerformanceManager(this);
 		this.indexManager = new IndexManager(this);
 		this.cacheManager = new CacheManager(this);
+		this._data = [];
+		this._dataMap = {};
+	}
+
+	/**
+	 * Attaches a persistence adapter to this collection. Pulls the data from the
+	 * persistence adapter and retrieves persisted indices from the adapter.
+	 * If the persistence adapter has additional info to restore in the collection,
+	 * it lies in it's domain to do this.
+	 * @param persistenceAdapter The persistence adapter to
+	 */
+	attachPersistenceAdapter(persistenceAdapter) {
+		this.persistenceAdapter = persistenceAdapter;
+		this._data = persistenceAdapter.data;
 
 		persistenceAdapter.getIndices().forEach(index => this.addIndex(index));
 		STANDARD_INDICES.forEach(indexDefinition => this.indexManager.createIndex(indexDefinition.field, indexDefinition.type));
@@ -40,9 +62,9 @@ class Collection extends AbstractDataProvider {
 	 * @param documents {array|object}
 	 */
 	insert(documents) {
-		if(Array.isArray(documents)) {
+		if (Array.isArray(documents)) {
 			let i = documents.length;
-			while(i--) {
+			while (i--) {
 				this.insertOne(documents[i]);
 			}
 		}
@@ -59,8 +81,8 @@ class Collection extends AbstractDataProvider {
 	}
 
 	find(query, keep = false) {
-		let resultSet = new ResultSet(this, this, new Query(query));
-		if(keep) {
+		let resultSet = new ResultSet(this, this, new Query(query, this));
+		if (keep) {
 			this.trackedResultSets.push(resultSet);
 		}
 		return resultSet;
@@ -70,21 +92,22 @@ class Collection extends AbstractDataProvider {
 		return this._data;
 	}
 
-	getPerformanceManager(){
+	getPerformanceManager() {
 		return this.performanceManager;
 	}
 
-	getPersistenceManager(){
+	getPersistenceManager() {
 		return this.persistenceAdapter;
 	}
 
-	getIndexManager(){
+	getIndexManager() {
 		return this.indexManager;
 	}
 
-	getCacheManager(){
+	getCacheManager() {
 		return this.cacheManager;
 	}
+
 
 }
 
