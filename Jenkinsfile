@@ -7,11 +7,6 @@ pipeline {
   }
  
   stages {
-    stage ('Checkout Code') {
-      steps {
-        checkout scm
-      }
-    }
     stage ('Verify Tools'){
       steps {
         parallel (
